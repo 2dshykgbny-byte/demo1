@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>熱戀衝刺包 💗 試玩版 · NCW</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800&display=swap');
+  :root {
+    --pink-deep: #e91e8c;
+    --pink-hot: #ff4dac;
+    --pink-light: #ff85c2;
+    --pink-pale: #ffd6ec;
+    --pink-ultra: #fff0f8;
+    --gold: #ffd700;
+    --white: #ffffff;
+    --text-dark: #3d0026;
+    --text-mid: #7a1a4e;
+    --shadow-pink: rgba(233,30,140,0.35);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #ffe0f0 0%, #ffc2e0 25%, #ffaad4 50%, #ff85c2 75%, #ff5fb0 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255,77,172,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(233,30,140,0.25) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hearts-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .heart-float { position: absolute; opacity: 0.15; animation: floatHeart linear infinite; }
+  @keyframes floatHeart {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.15; } 90% { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  .app-container {
+    position: relative; z-index: 1; width: 100%; max-width: 480px;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; padding: 0 16px 100px;
+  }
+
+  /* Demo banner */
+  .demo-banner {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), #ffb300);
+    color: var(--text-dark);
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+
+  .header { width: 100%; text-align: center; padding: 24px 0 14px; }
+  .header-emoji { font-size: 2.2rem; display: block; margin-bottom: 6px; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: var(--text-dark); text-shadow: 0 2px 8px rgba(233,30,140,0.3); }
+  .header .subtitle { font-size: 0.8rem; color: var(--text-mid); margin-top: 4px; font-weight: 700; }
+  .trial-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--text-dark);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Progress */
+  .progress-bar-wrap { width: 100%; background: rgba(255,255,255,0.5); border-radius: 20px; height: 10px; margin: 14px 0 5px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--pink-deep), var(--gold)); border-radius: 20px; transition: width 0.5s ease; }
+  .progress-text { font-size: 0.8rem; color: var(--text-mid); font-weight: 700; text-align: center; }
+
+  /* Deck */
+  .deck-area { width: 100%; display: flex; flex-direction: column; align-items: center; margin: 20px 0; gap: 20px; }
+  .deck-stack { position: relative; width: 260px; height: 160px; }
+  .deck-stack .stack-card {
+    position: absolute; width: 260px; height: 155px; border-radius: 20px;
+    background: linear-gradient(135deg, var(--pink-deep), var(--pink-hot));
+    box-shadow: 0 8px 25px var(--shadow-pink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .deck-stack .stack-card:nth-child(3) { transform: rotate(-3deg) translateY(6px); opacity: 0.7; }
+  .deck-stack .stack-card:nth-child(2) { transform: rotate(-1.5deg) translateY(3px); opacity: 0.85; }
+  .deck-stack .stack-card:nth-child(1) { transform: rotate(0deg); }
+  .deck-label {
+    background: linear-gradient(135deg, var(--pink-deep), var(--pink-hot));
+    color: black; border: none; border-radius: 50px; padding: 12px 28px;
+    font-size: 1.05rem; font-weight: 800; font-family: 'Nunito', sans-serif;
+    letter-spacing: 1px; box-shadow: 0 6px 20px var(--shadow-pink);
+    pointer-events: none; position: relative; overflow: hidden;
+    transition: opacity 0.4s ease; white-space: nowrap;
+  }
+  .deck-label.hidden { opacity: 0; }
+  .deck-count-badge {
+    position: absolute; top: -10px; right: -10px; background: var(--gold);
+    color: var(--text-dark); font-size: 0.8rem; font-weight: 800;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2;
+    transition: top 0.6s cubic-bezier(0.34,1.56,0.64,1), right 0.6s cubic-bezier(0.34,1.56,0.64,1), width 0.5s ease, height 0.5s ease, font-size 0.5s ease;
+  }
+  .deck-count-badge.centered { top: 50%; right: 50%; transform: translate(50%, -50%); width: 52px; height: 52px; font-size: 1.15rem; }
+
+  .draw-btn {
+    background: linear-gradient(135deg, var(--pink-deep), var(--pink-hot));
+    color: white; border: none; border-radius: 50px; padding: 16px 48px;
+    font-size: 1.1rem; font-weight: 800; font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 0 8px 24px var(--shadow-pink); transition: all 0.2s; letter-spacing: 1px;
+  }
+  .draw-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 32px var(--shadow-pink); }
+  .draw-btn:active { transform: translateY(0); }
+  .draw-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Card flip */
+  .card-display { width: 100%; perspective: 1200px; margin: 8px 0; }
+  .card-inner { width: 100%; min-height: 200px; position: relative; transform-style: preserve-3d; transition: transform 3s cubic-bezier(0.4,0,0.2,1); }
+  .card-inner.flipped { transform: rotateY(180deg); }
+  .card-face { position: absolute; width: 100%; min-height: 200px; border-radius: 24px; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 28px 24px; }
+  .card-front { background: linear-gradient(135deg, var(--pink-deep) 0%, #c2006e 100%); box-shadow: 0 12px 40px var(--shadow-pink); overflow: hidden; }
+  .card-front-content { text-align: center; color: rgba(255,255,255,0.8); font-size: 0.95rem; font-weight: 600; z-index: 1; transition: opacity 0.5s ease; }
+  .card-front-icon { font-size: 3.5rem; display: block; margin-bottom: 8px; }
+  .card-back { transform: rotateY(180deg); box-shadow: 0 12px 40px var(--shadow-pink); }
+  .card-back.type-dialogue { background: linear-gradient(135deg, #fff0f8, #ffd6ec); border: 3px solid var(--pink-light); }
+  .card-back.type-action { background: linear-gradient(135deg, #fff8e0, #ffd700); border: 3px solid var(--gold); }
+  .card-back::before { content: '♥'; position: absolute; top: 12px; right: 16px; font-size: 1.4rem; opacity: 0.15; color: var(--pink-deep); }
+  .card-back.type-action::before { color: #b8860b; }
+  .card-back-content { width: 100%; }
+  .card-type-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+  .badge-dialogue { background: var(--pink-deep); color: white; }
+  .badge-action { background: var(--gold); color: var(--text-dark); }
+  .card-number { font-size: 0.75rem; color: var(--text-mid); font-weight: 600; margin-bottom: 6px; opacity: 0.7; }
+  .card-text-zh { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--text-dark); line-height: 1.5; margin-bottom: 8px; }
+  .card-text-ms { font-size: 0.88rem; color: var(--text-mid); line-height: 1.45; font-style: italic; margin-bottom: 6px; }
+  .card-text-en { font-size: 0.82rem; color: #b04070; line-height: 1.4; font-weight: 600; }
+  .card-hearts-deco { text-align: center; margin-top: 14px; letter-spacing: 6px; font-size: 0.9rem; opacity: 0.5; }
+  .type-action .card-hearts-deco { color: #b8860b; }
+  .type-dialogue .card-hearts-deco { color: var(--pink-deep); }
+
+  /* Buy CTA */
+  .buy-cta {
+    width: 100%;
+    background: white;
+    border-radius: 24px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: 0 12px 40px var(--shadow-pink);
+    margin: 8px 0;
+    border: 2px solid var(--pink-pale);
+    display: none;
+  }
+  .buy-cta.show { display: block; animation: slideUp 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .buy-cta-emoji { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+  .buy-cta h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--pink-deep); margin-bottom: 8px; }
+  .buy-cta p { font-size: 0.88rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 16px; }
+  .buy-cta-features { text-align: left; background: var(--pink-ultra); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; }
+  .buy-cta-features div { font-size: 0.85rem; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; }
+  .buy-cta-features div:last-child { margin-bottom: 0; }
+  .buy-btn {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, var(--pink-deep), var(--pink-hot));
+    color: white; border: none; border-radius: 50px; padding: 16px;
+    font-size: 1rem; font-weight: 800; font-family: 'Nunito', sans-serif;
+    cursor: pointer; box-shadow: 0 8px 20px var(--shadow-pink); letter-spacing: 1px;
+    text-decoration: none; margin-bottom: 10px;
+    animation: buyPulse 2s ease-in-out infinite;
+  }
+  @keyframes buyPulse { 0%,100% { box-shadow: 0 8px 20px var(--shadow-pink); } 50% { box-shadow: 0 8px 35px rgba(233,30,140,0.6); } }
+  .replay-btn {
+    background: transparent; color: var(--text-mid); border: 2px solid var(--pink-light);
+    border-radius: 50px; padding: 10px 28px; font-size: 0.85rem; font-weight: 700;
+    font-family: 'Nunito', sans-serif; cursor: pointer; transition: all 0.2s;
+  }
+  .replay-btn:hover { background: var(--pink-pale); }
+
+  .footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); text-align: center; padding: 10px 16px; font-size: 0.7rem; color: var(--text-mid); font-weight: 600; border-top: 1px solid rgba(233,30,140,0.15); z-index: 100; }
+
+  /* Save badge */
+  .save-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(233,30,140,0.1); border: 1px solid rgba(233,30,140,0.25); border-radius: 20px; padding: 4px 12px; font-size: 0.72rem; color: var(--pink-deep); font-weight: 700; margin: 5px 0 0; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+
+  @keyframes drawCard { 0% { transform: translateY(-30px) scale(0.9); opacity: 0; } 60% { transform: translateY(4px) scale(1.02); opacity: 1; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+  .card-animate { animation: drawCard 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<div class="demo-banner">
+  ✨ 試玩版 · Versi Demo · Demo Version — 8 張體驗卡 · 8 Kad Percubaan · 8 Trial Cards | 完整版 100 張 · Versi Penuh 100 Kad · Full Version 100 Cards
+</div>
+
+<div class="app-container">
+  <div class="header">
+    <span class="header-emoji">💗</span>
+    <h1>熱戀衝刺包</h1>
+    <div class="subtitle">Hot Love Sprint Pack · Pek Cinta Bergelora</div>
+    <span class="trial-badge">🎮 免費試玩 8 張 · Free Trial</span>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+  </div>
+  <div class="progress-text" id="progressText">點擊開始試玩！· Click to start!</div>
+  <div class="save-badge"><div class="save-dot"></div>試玩版 · 8 張體驗卡</div>
+
+  <div class="deck-area">
+    <div class="deck-stack" id="deckStack">
+      <div class="stack-card">
+        <div class="deck-label" id="deckLabel">♥ Click to draw</div>
+      </div>
+      <div class="stack-card"></div>
+      <div class="stack-card"></div>
+      <div class="deck-count-badge" id="deckCountBadge">8</div>
+    </div>
+    <button class="draw-btn" id="drawBtn" onclick="drawCard()">✨ 抽取下一張 / Draw Next</button>
+  </div>
+
+  <div class="card-display" id="cardDisplay" style="display:none;">
+    <div class="card-inner" id="cardInner">
+      <div class="card-face card-front">
+        <div class="card-front-content" id="cardFrontContent">
+          <span class="card-front-icon">💗</span>
+        </div>
+      </div>
+      <div class="card-face card-back" id="cardBack">
+        <div class="card-back-content" id="cardContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buy CTA -->
+  <div class="buy-cta" id="buyCta">
+    <span class="buy-cta-emoji">🎉</span>
+    <h2>喜歡這個遊戲嗎？<br><small style="font-size:0.75em;opacity:0.8;">Suka permainan ini? · Enjoying this game?</small></h2>
+    <p>
+      你已體驗了 8 張試玩卡！完整版包含 <strong>100 張卡牌</strong>，更多驚喜等著你們！<br>
+      <em style="font-size:0.85em;opacity:0.85;">Kamu telah mencuba 8 kad! Versi penuh mengandungi <strong>100 kad</strong> dengan lebih banyak kejutan!</em><br>
+      <em style="font-size:0.82em;opacity:0.75;">You've tried 8 cards! The full version has <strong>100 cards</strong> with even more surprises!</em>
+    </p>
+    <div class="buy-cta-features">
+      <div>💗 85 張「心跳對話卡」· Kad Dialog · Dialogue Cards</div>
+      <div>⭐ 15 張「甜蜜行動卡」· Kad Aksi · Action Cards</div>
+      <div>🔒 密碼保護，專屬你們 · Dilindungi kata laluan · Password protected</div>
+      <div>📱 無需安裝，手機直接玩 · Tiada pemasangan · No install needed</div>
+      <div>💾 進度自動保存 · Kemajuan disimpan · Progress auto-saved</div>
+    </div>
+    <a class="buy-btn" href="https://shopee.com.my" target="_blank">🛒 立即購買完整版 · Beli Sekarang · Buy Now</a>
+    <button class="replay-btn" onclick="replayDemo()">🔄 重新試玩 · Cuba Lagi · Play Again</button>
+  </div>
+</div>
+
+<div class="footer">© 2026 NCW 版權所有 · 試玩版</div>
+
+<script>
+const CARDS = [
+  {type:'dialogue',zh:'你還記得第一次見到我時，心裡想的第一個念頭是什麼？',ms:'Apa yang pertama kali terlintas dalam fikiranmu bila pertama kali nampak aku?',en:'What was the very first thought that crossed your mind when you first saw me?'},
+  {type:'dialogue',zh:'哪一刻你突然確定，自己喜歡上我了？',ms:'Pada saat bila kamu tiba-tiba sedar bahawa kamu jatuh cinta dengan aku?',en:'At what exact moment did you suddenly realize you had fallen for me?'},
+  {type:'dialogue',zh:'你最喜歡我身上的哪三個地方，說說理由！',ms:'Apa tiga perkara yang paling kamu suka tentang aku? Cerita sebabnya!',en:'What are your three favorite things about me? Tell me why!'},
+  {type:'dialogue',zh:'你覺得我身上最讓你心動的笑容或表情是哪一個？',ms:'Senyuman atau ekspresi apa daripadaku yang paling buat hati kamu berdegup?',en:'Which smile or expression of mine makes your heart beat the fastest?'},
+  {type:'dialogue',zh:'和我在一起時，哪個瞬間讓你感覺最幸福？',ms:'Masa bila kamu rasa paling bahagia ketika bersama aku?',en:'Which moment with me makes you feel the most deeply happy?'},
+  {type:'dialogue',zh:'你有沒有一直想告訴我但還沒說出口的話？',ms:'Ada tak sesuatu yang sentiasa ingin kamu beritahu aku tapi belum terucap?',en:'Is there something you have always wanted to tell me but never quite said?'},
+  {type:'action',zh:'💕 現在，用你最深情的眼神看對方 10 秒鐘，不能笑！',ms:'💕 Sekarang, tatap pasanganmu dengan penuh kasih selama 10 saat — jangan ketawa!',en:'💕 Right now, gaze into your partner\'s eyes with pure love for 10 seconds — no laughing allowed!'},
+  {type:'action',zh:'🫂 給對方一個至少 20 秒的擁抱，感受彼此的心跳！',ms:'🫂 Peluk pasanganmu selama sekurang-kurangnya 20 saat dan rasai degupan jantung masing-masing!',en:'🫂 Give your partner a hug lasting at least 20 seconds and feel each other\'s heartbeats!'},
+];
+
+let deck = [...CARDS].map((c,i) => ({...c,id:i}));
+let drawn = 0;
+let isFlipping = false;
+
+function shuffle(arr) {
+  for (let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+}
+shuffle(deck);
+
+function updateProgress() {
+  const pct = (drawn / CARDS.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('deckCountBadge').textContent = deck.length;
+  if (drawn === 0) {
+    document.getElementById('progressText').textContent = '點擊開始試玩！· Click to start!';
+  } else {
+    document.getElementById('progressText').textContent = `試玩 ${drawn} / ${CARDS.length} 張 · Card ${drawn}/${CARDS.length}`;
+  }
+  if (deck.length === 0) {
+    document.getElementById('drawBtn').disabled = true;
+    document.getElementById('deckStack').style.opacity = '0.4';
+    setTimeout(() => document.getElementById('buyCta').classList.add('show'), 1000);
+  }
+}
+
+function drawCard() {
+  if (isFlipping || deck.length === 0) return;
+  isFlipping = true;
+
+  const card = deck.pop();
+  drawn++;
+
+  const lbl = document.getElementById('deckLabel');
+  if (lbl) lbl.classList.add('hidden');
+  setTimeout(() => {
+    const badge = document.getElementById('deckCountBadge');
+    if (badge) badge.classList.add('centered');
+  }, 350);
+
+  const cardDisplay = document.getElementById('cardDisplay');
+  const cardInner = document.getElementById('cardInner');
+  const cardBack = document.getElementById('cardBack');
+  const cardContent = document.getElementById('cardContent');
+  const frontContent = document.getElementById('cardFrontContent');
+
+  cardInner.style.transition = 'none';
+  cardInner.classList.remove('flipped');
+  cardBack.className = 'card-face card-back';
+  cardDisplay.style.display = 'block';
+  if (frontContent) frontContent.style.opacity = '1';
+  void cardInner.offsetWidth;
+
+  const typeLabel = card.type === 'action' ? '甜蜜行動卡 · Kad Aksi Manis · Sweet Action Card' : '心跳對話卡 · Kad Dialog · Heartbeat Dialogue';
+  const badgeClass = card.type === 'action' ? 'badge-action' : 'badge-dialogue';
+  const backClass = card.type === 'action' ? 'type-action' : 'type-dialogue';
+  const heartsDeco = card.type === 'action' ? '✦ ★ ✦' : '♥ · ♥ · ♥';
+
+  cardContent.innerHTML = `
+    <div class="card-type-badge ${badgeClass}">${typeLabel}</div>
+    <div class="card-number">試玩 No. ${drawn} / ${CARDS.length}</div>
+    <div class="card-text-zh">${card.zh}</div>
+    <div class="card-text-ms">${card.ms}</div>
+    <div class="card-text-en">${card.en}</div>
+    <div class="card-hearts-deco">${heartsDeco}</div>
+  `;
+  cardBack.classList.add(backClass);
+
+  cardDisplay.classList.add('card-animate');
+  setTimeout(() => cardDisplay.classList.remove('card-animate'), 600);
+
+  setTimeout(() => {
+    cardInner.style.transition = '';
+    cardInner.classList.add('flipped');
+    setTimeout(() => {
+      isFlipping = false;
+      if (frontContent) frontContent.style.opacity = '0';
+    }, 3000);
+  }, 200);
+
+  setTimeout(() => {
+    if (frontContent) frontContent.style.opacity = '0';
+  }, 1200);
+
+  updateProgress();
+}
+
+function replayDemo() {
+  deck = [...CARDS].map((c,i) => ({...c,id:i}));
+  shuffle(deck);
+  drawn = 0;
+  isFlipping = false;
+  document.getElementById('cardDisplay').style.display = 'none';
+  document.getElementById('cardInner').classList.remove('flipped');
+  document.getElementById('drawBtn').disabled = false;
+  document.getElementById('deckStack').style.opacity = '1';
+  document.getElementById('buyCta').classList.remove('show');
+  const lbl = document.getElementById('deckLabel');
+  if (lbl) lbl.classList.remove('hidden');
+  const badge = document.getElementById('deckCountBadge');
+  if (badge) badge.classList.remove('centered');
+  updateProgress();
+}
+
+function createHearts() {
+  const container = document.getElementById('heartsBg');
+  const hearts = ['♥','💗','💕','💓','💖'];
+  for (let i = 0; i < 14; i++) {
+    const el = document.createElement('span');
+    el.className = 'heart-float';
+    el.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+    el.style.cssText = `left:${Math.random()*100}%;font-size:${12+Math.random()*16}px;animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*15}s;`;
+    container.appendChild(el);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  createHearts();
+  updateProgress();
+});
+</script>
+</body>
+</html>
